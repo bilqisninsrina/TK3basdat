@@ -1,0 +1,89 @@
+{% extends 'pengguna/base.html' %}
+
+{% block title %}Profil | TikTakTuk{% endblock %}
+
+{% block content %}
+<main class="page narrow profile-page">
+    <header class="page-header">
+        <h1>{{ profile_title }}</h1>
+        <p>{{ profile_subtitle }}</p>
+    </header>
+
+    <section class="profile-info-card">
+        <div class="profile-card-header">
+            <div>
+                <h2>Informasi Profil</h2>
+                <p>Kelola data pribadi Anda di platform TikTakTuk</p>
+            </div>
+            {% if profile_form %}
+                <a class="button button-ghost" href="{% url 'pengguna:profile' %}?edit=1">Edit</a>
+            {% endif %}
+        </div>
+
+        <div class="profile-avatar-row">
+            <div class="profile-avatar">{{ initial }}</div>
+        </div>
+
+        <div class="profile-divider"></div>
+
+        <div class="profile-role-block">
+            <span>Role / Peran</span>
+            <p class="role-chip">{{ role_badge }}</p>
+        </div>
+
+        <div class="profile-detail-grid">
+            {% for item in info_items %}
+                <div class="profile-detail-item">
+                    <span class="detail-label">{{ item.label }}</span>
+                    <strong>{{ item.value }}</strong>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if edit_mode and profile_form %}
+            <form method="post" class="profile-edit-form">
+                {% csrf_token %}
+                {% for field in profile_form %}
+                    <div class="field-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="field-errors">{{ field.errors|join:', ' }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <div class="button-row right">
+                    <a class="button button-muted" href="{% url 'pengguna:profile' %}">Cancel</a>
+                    <button class="button button-dark" type="submit" name="save_profile">Simpan</button>
+                </div>
+            </form>
+        {% endif %}
+    </section>
+
+    <section class="password-card">
+        <div class="profile-card-header">
+            <div>
+                <h2>Update Password</h2>
+                <p>Perbarui password Anda untuk menjaga keamanan akun</p>
+            </div>
+        </div>
+
+        <form method="post" class="password-form">
+            {% csrf_token %}
+            {% for field in password_form %}
+                <div class="field-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="field-errors">{{ field.errors|join:', ' }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <div class="button-row right">
+                <a class="button button-muted" href="{% url 'pengguna:dashboard' %}">Cancel</a>
+                <button class="button button-dark" type="submit" name="change_password">Update Password</button>
+            </div>
+        </form>
+    </section>
+</main>
+{% endblock %}

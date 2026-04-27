@@ -1,0 +1,94 @@
+{% extends 'pengguna/base.html' %}
+
+{% block title %}Dashboard | TikTakTuk{% endblock %}
+
+{% block content %}
+<main class="page dashboard-page">
+    <section class="dashboard-hero dashboard-hero-{{ dashboard_variant }}">
+        <div class="dashboard-hero-copy">
+            <p class="dashboard-eyebrow">{{ hero_eyebrow }}</p>
+            <h1>{{ hero_title }}</h1>
+            <p class="dashboard-subtitle">{{ hero_subtitle }}</p>
+        </div>
+        <div class="dashboard-hero-actions">
+            {% for action in hero_actions %}
+                {% if action.href %}
+                    <a class="button hero-button hero-button-{{ action.style }}" href="{% url action.href %}">{{ action.label }}</a>
+                {% else %}
+                    <button class="button hero-button hero-button-{{ action.style }}" type="button" disabled>{{ action.label }}</button>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="dashboard-stats">
+        {% for stat in stats %}
+            <article class="dashboard-stat">
+                <div class="dashboard-stat-copy">
+                    <p>{{ stat.label }}</p>
+                    <strong>{{ stat.value }}</strong>
+                    <small>{{ stat.note }}</small>
+                </div>
+                <span class="stat-icon stat-icon-{{ stat.tone }}">
+                    {% if stat.icon == 'users' %}◎{% elif stat.icon == 'calendar' %}◫{% elif stat.icon == 'chart' %}↗{% elif stat.icon == 'ticket' %}◧{% elif stat.icon == 'location' %}⌖{% elif stat.icon == 'music' %}♫{% else %}•{% endif %}
+                </span>
+            </article>
+        {% endfor %}
+    </section>
+
+    {% if dashboard_variant == 'admin' %}
+        <section class="dashboard-panels">
+            {% for panel in admin_panels %}
+                <article class="dashboard-panel">
+                    <div class="panel-heading">
+                        <h2>{{ panel.title }}</h2>
+                        <span>{{ panel.link_text }}</span>
+                    </div>
+                    <div class="metric-list">
+                        {% for label, value in panel.rows %}
+                            <div class="metric-row">
+                                <span>{{ label }}</span>
+                                <strong>{{ value }}</strong>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <button class="button panel-button" type="button" disabled>{{ panel.button_label }}</button>
+                </article>
+            {% endfor %}
+        </section>
+    {% else %}
+        <section class="dashboard-feed">
+            <div class="panel-heading">
+                <div>
+                    <h2>{{ section_title }}</h2>
+                    <p>{{ section_subtitle }}</p>
+                </div>
+                {% if section_link and section_link.href %}
+                    <a href="{% url section_link.href %}">{{ section_link.label }}</a>
+                {% elif section_link %}
+                    <span class="feed-link-muted">{{ section_link.label }}</span>
+                {% endif %}
+            </div>
+            <div class="feed-list">
+                {% for item in event_items %}
+                    <article class="feed-item">
+                        <div class="feed-item-main">
+                            <div class="feed-title-row">
+                                <strong>{{ item.title }}</strong>
+                                <span class="feed-badge">{{ item.badge }}</span>
+                            </div>
+                            <div class="feed-meta-row">
+                                <span>{{ item.meta }}</span>
+                                <span>{{ item.location }}</span>
+                            </div>
+                        </div>
+                        <span class="feed-arrow">›</span>
+                    </article>
+                {% empty %}
+                    <p class="empty-state">Belum ada data yang bisa ditampilkan.</p>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+</main>
+{% endblock %}

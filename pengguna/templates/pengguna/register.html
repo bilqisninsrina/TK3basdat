@@ -1,0 +1,49 @@
+{% extends 'pengguna/base.html' %}
+
+{% block title %}{{ page_title }} | TikTakTuk{% endblock %}
+
+{% block content %}
+<main class="auth-page">
+    <section class="auth-panel compact">
+        <div class="auth-header">
+            <span class="auth-logo">TT</span>
+            <h1>TikTakTuk</h1>
+            <p>Daftar untuk Memulai</p>
+        </div>
+
+        <div class="auth-card form-card">
+            <a class="back-link" href="{% url back_url %}">&larr; Kembali</a>
+            <div class="section-head">
+                <h2>{{ page_title }}</h2>
+                <p>{{ subtitle }}</p>
+            </div>
+
+            <form method="post" class="stack-form">
+                {% csrf_token %}
+                {% for field in form %}
+                    {% if field.name == 'agree_terms' %}
+                        <label class="checkbox-row">
+                            {{ field }}
+                            <span>{{ field.label }}</span>
+                        </label>
+                        {% if field.errors %}
+                            <div class="field-errors">{{ field.errors|join:', ' }}</div>
+                        {% endif %}
+                    {% else %}
+                        <div class="field-group">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="field-errors">{{ field.errors|join:', ' }}</div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <button class="button button-dark button-block" type="submit">Daftar</button>
+            </form>
+        </div>
+
+        <p class="auth-footer">Sudah punya akun? <a href="{% url 'pengguna:login' %}">Login di sini</a></p>
+    </section>
+</main>
+{% endblock %}

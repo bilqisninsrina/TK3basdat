@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TikTakTuk{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'pengguna/styles.css' %}">
+</head>
+<body>
+    <div class="site-shell">
+        {% if not hide_navbar %}
+            <header class="navbar">
+                <a class="brand" href="{% url 'pengguna:role_selection' %}">
+                    <span class="brand-mark">TT</span>
+                    <span>
+                        <strong>TikTakTuk</strong>
+                        <small>Platform Pertunjukan & Tiket</small>
+                    </span>
+                </a>
+                <nav class="nav-links">
+                    {% if is_logged_in %}
+                        <a href="{% url 'pengguna:dashboard' %}">Dashboard</a>
+                    {% else %}
+                        <a href="{% url 'pengguna:role_selection' %}">Daftar</a>
+                    {% endif %}
+                    <a href="{% url 'pengguna:artist_list' %}">Artis</a>
+                    <a href="{% url 'pengguna:ticket_category_list' %}">Kategori Tiket</a>
+                    {% if is_logged_in %}
+                        <a href="{% url 'pengguna:profile' %}">Profil</a>
+                        <a class="nav-pill" href="{% url 'pengguna:logout' %}">Logout</a>
+                    {% else %}
+                        <a class="nav-pill" href="{% url 'pengguna:login' %}">Login</a>
+                    {% endif %}
+                </nav>
+            </header>
+        {% endif %}
+
+        {% if messages %}
+            <div class="flash-stack">
+                {% for message in messages %}
+                    <div class="flash flash-{{ message.tags|default:'info' }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
